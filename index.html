@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Socket.io</h1>
+    <!--Connecting this file to socket.io-->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+    <!--Create a div object to store messages-->
+    <div id="msgs"></div>
+    <!--Creating the text box to send messages at index.html-->
+    <input type="text" />
+    <script>
+      const socket = io(); //Instancing the socket.io calling its constructor.
+      //Warning new connections by the div object in case of new connection at socket.io
+      socket.on("connect", function () {
+        //Adding the warning to the last position in the div object
+        $("#msgs").append("connected with id" + socket.id + "<br>");
+        //Sending message to server warning the new connection.
+        socket.emit("msg", "I am connected " + socket.id);
+      });
+
+      //Printing the message received from server by socket.io in the div object
+      socket.on("msg", function (msg) {
+        //Adding the message to the last position in the div object
+        $("#msgs").append(msg + "<br>");
+      });
+      $(function () {
+        //Assigning the enter key (code 13) to send the content in the div object to the server by socket.io
+        $("input").keydown(function (key) {
+          if (key.keyCode === 13) {
+            socket.emit("msg", $(this).val());
+            $(this).val(""); //
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
